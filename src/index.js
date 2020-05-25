@@ -1,6 +1,25 @@
-import React from "react";
-import { HelloWorld } from "_atoms";
+import "react-native-gesture-handler";
+import * as React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import {
+  ToDoScreen,
+  LeaderboardScreen,
+  TeamScreen,
+  PointsScreen,
+} from "_screens";
 
-const App = () => <HelloWorld name="Helder Burato Berto" />;
+const Tab = createBottomTabNavigator();
 
-export default App;
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Tab.Navigator>
+        <Tab.Screen name="ToDo" component={ToDoScreen} />
+        <Tab.Screen name="Leaderboard" component={LeaderboardScreen} />
+        <Tab.Screen name="Team" component={TeamScreen} />
+        <Tab.Screen name="Points" component={PointsScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+}

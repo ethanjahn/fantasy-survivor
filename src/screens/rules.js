@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Text } from "react-native";
 
-export default function PointsScreen() {
+export default function RulesScreen() {
   return <Text>Points</Text>;
 }

@@ -111,12 +111,21 @@ class ToDoTextContainer extends React.Component {
   }
 }
 
+const PlayerCard = props =>
+  <View style={{backgroundColor: "red", width: 160, height: 160, margin: 15,}}></View>
 
 export default function ToDoScreen() {
   return (
     <SafeAreaView>
         <Text style={{fontWeight: "bold", fontSize: 40, margin: 5, color: "#51355A", textAlign: "center"}}>Survivors, are you ready?</Text>
         <ToDoTextContainer />
+        <View style={{marginLeft: 15, flex: 1, alignSelf: 'center', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start', alignContent: 'flex-start', flexWrap: 'wrap'}}>
+          <PlayerCard />
+          <PlayerCard />
+          <PlayerCard />
+          <PlayerCard />
+          <PlayerCard />
+        </View>
     </SafeAreaView>
   );
 }

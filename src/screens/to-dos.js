@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Text, View, SafeAreaView } from "react-native";
-import { HelloWorld } from "_atoms";
+import { Text, Image, View, SafeAreaView, ScrollView } from "react-native";
+import { FontAwesome5 } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 
 // Create 4 container components: currentWeek, playoffString, selectedPlayers, boostedPlayers
@@ -111,21 +112,94 @@ class ToDoTextContainer extends React.Component {
   }
 }
 
+class PlayerCards extends React.Component { 
+  state = {
+    players: [
+      {
+        key: "1",
+        name: "Tony",
+        tribeName: "Dakal",
+        boostedType: "survival",
+        isSelected: false,
+        color: "lightblue",
+        borderColor: "darkblue",
+        imageUrl: "https://wwwimage-secure.cbsstatic.com/thumbnails/photos/w425-q80/cast/520510d9980da36f_surv34_cast_tonyvlachos.jpg"
+      },
+      {
+        key: "2",
+        name: "Natalie",
+        tribeName: "Sele",
+        boostedType: "survival",
+        isSelected: false,
+        color: "pink",
+        borderColor: "darkred",
+        imageUrl: "https://i0.wp.com/myiclicktv.com/wp-content/uploads/2020/02/EOVw7HrWAAAfWs1-409x600sss.jpg?fit=591%2C400&ssl=1"
+      },
+      {
+        key: "3",
+        name: "Yul",
+        tribeName: "Dakal",
+        boostedType: "survival",
+        isSelected: false,
+        color: "lightblue",
+        borderColor: "darkblue",
+        imageUrl: "https://vignette.wikia.nocookie.net/survivor/images/d/dc/S40_Yul_Kwon.jpg/revision/latest/scale-to-width-down/670?cb=20200115164424"
+      }
+    ]
+  };
+
+  getColumns() {
+    var leftColumnArray = [];
+    var rightColumnArray = [];
+
+    for (var i = 0; i < this.state.players.length; i++) {
+      if (i % 2 == 0)
+        leftColumnArray.push(this.state.players[i]);
+      else
+        rightColumnArray.push(this.state.players[i]);
+    }
+
+    return [leftColumnArray, rightColumnArray]
+  }
+
+
+  columns = this.getColumns()
+  leftColumn = this.columns[0].map(cardInfo => (<PlayerCard {...cardInfo}/>));
+  rightColumn = this.columns[1].map(cardInfo => (<PlayerCard {...cardInfo}/>));
+
+  render() {
+    return <View style={{flexDirection: 'row', alignSelf: 'center'}}>
+      <View style={{flexDirection: 'column'}}>
+        {this.leftColumn}
+      </View>
+      <View style={{flexDirection: 'column'}}>
+        {this.rightColumn}
+      </View>
+    </View>
+  };
+}
+
 const PlayerCard = props =>
-  <View style={{backgroundColor: "red", width: 160, height: 160, margin: 15,}}></View>
+  <View style={{backgroundColor: props.color, width: 160, height: 160, margin: 16}}>
+    <Text style={{fontWeight: "bold", fontSize: 20}}>{ props.name }</Text>
+    <Text style={{fontSize: 14}}>{ props.tribeName }</Text>
+    <Image style={{marginTop: -20, marginBottom: 5, width: 90, height: 90, alignSelf: "center", borderRadius: 45, borderWidth: 3, borderColor: props.borderColor}} source={{uri: props.imageUrl}} />
+    <View style={{flexDirection: 'row', justifyContent: "space-evenly"}}>
+      <MaterialCommunityIcons name="campfire" size={35} color="black" />
+      <MaterialCommunityIcons name="compass" size={35} color="black" />
+      <FontAwesome5 name="fist-raised" size={35} color="black" />
+      <MaterialCommunityIcons name="drama-masks" size={35} color="black" />
+    </View>
+  </View>
 
 export default function ToDoScreen() {
   return (
     <SafeAreaView>
-        <Text style={{fontWeight: "bold", fontSize: 40, margin: 5, color: "#51355A", textAlign: "center"}}>Survivors, are you ready?</Text>
+      <ScrollView>
+        <Text style={{fontWeight: "bold", fontSize: 30, margin: 5, color: "#51355A", textAlign: "center"}}>Survivors, are you ready?</Text>
         <ToDoTextContainer />
-        <View style={{marginLeft: 15, flex: 1, alignSelf: 'center', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start', alignContent: 'flex-start', flexWrap: 'wrap'}}>
-          <PlayerCard />
-          <PlayerCard />
-          <PlayerCard />
-          <PlayerCard />
-          <PlayerCard />
-        </View>
+        <PlayerCards />
+      </ScrollView>
     </SafeAreaView>
   );
 }

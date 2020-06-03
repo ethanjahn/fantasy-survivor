@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, Image, View, SafeAreaView, ScrollView } from "react-native";
+import { Text, Image, View, SafeAreaView, ScrollView, TouchableWithoutFeedback } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
@@ -112,6 +112,66 @@ class ToDoTextContainer extends React.Component {
   }
 }
 
+class PlayerCardButtonIcon extends React.Component {
+  render() {
+    switch(this.props.buttonType) {
+      case 'survival':
+        return (<MaterialCommunityIcons name="campfire" size={35} color={this.props.color} />);
+      case 'exploration':
+        return (<MaterialCommunityIcons name="compass" size={35} color={this.props.color} />);
+      case 'challenge':
+        return (<FontAwesome5 name="fist-raised" size={35} color={this.props.color} />);
+      case 'social':
+        return (<MaterialCommunityIcons name="drama-masks" size={35} color={this.props.color} />);
+    }
+  }
+}
+
+class PlayerCardButton extends React.Component {
+  state = {
+    isPressed: false
+  }
+
+  _onPress() {
+    this.setState(
+      {isPressed: true}
+    )
+  }
+
+  _getColor() {
+    if (this.state.isPressed) {
+      return "red"
+    } else {
+      return "green"
+    }
+  }
+
+  render() {
+    console.log(this._getColor())
+    console.log(this.state.isPressed)
+    return (
+    <TouchableWithoutFeedback onPress={this._onPress} style={{backgroundColor: "blue"}}>
+      <View>
+        <PlayerCardButtonIcon buttonType={this.props.buttonType} color={this._getColor()}/>
+      </View>
+    </TouchableWithoutFeedback>
+    );
+  }
+}
+
+class PlayerCardButtonGroup extends React.Component {
+  render() {
+    return (
+      <View style={{flexDirection: 'row', justifyContent: "space-evenly"}}>
+        <PlayerCardButton buttonType='survival' />
+        <PlayerCardButton buttonType='exploration' />
+        <PlayerCardButton buttonType='challenge' />
+        <PlayerCardButton buttonType='social' />
+      </View>
+    )
+  }
+}
+
 class PlayerCards extends React.Component { 
   state = {
     players: [
@@ -184,12 +244,7 @@ const PlayerCard = props =>
     <Text style={{fontWeight: "bold", fontSize: 20}}>{ props.name }</Text>
     <Text style={{fontSize: 14}}>{ props.tribeName }</Text>
     <Image style={{marginTop: -20, marginBottom: 5, width: 90, height: 90, alignSelf: "center", borderRadius: 45, borderWidth: 3, borderColor: props.borderColor}} source={{uri: props.imageUrl}} />
-    <View style={{flexDirection: 'row', justifyContent: "space-evenly"}}>
-      <MaterialCommunityIcons name="campfire" size={35} color="black" />
-      <MaterialCommunityIcons name="compass" size={35} color="black" />
-      <FontAwesome5 name="fist-raised" size={35} color="black" />
-      <MaterialCommunityIcons name="drama-masks" size={35} color="black" />
-    </View>
+    <PlayerCardButtonGroup />
   </View>
 
 export default function ToDoScreen() {

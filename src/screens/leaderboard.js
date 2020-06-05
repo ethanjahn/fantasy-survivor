@@ -1,6 +1,19 @@
 import * as React from "react";
 import { SafeAreaView, View, Text } from "react-native";
-import { HelloWorld } from '_atoms';
+import { Entypo } from '@expo/vector-icons';
+
+
+class Expand extends React.Component {
+  render() {
+      return <Entypo name="chevron-small-down" size={24} color="black" />
+  }
+}
+
+class Collapse extends React.Component {
+  render() {
+    return <Entypo name="chevron-small-up" size={24} color="black" />
+  }
+}
 
 const TeamStandingBar = props =>
   <View style={{flexDirection: 'row'}}>
@@ -10,7 +23,7 @@ const TeamStandingBar = props =>
         <Text style={{flex: 5, fontSize: 18, textAlign: 'center', textAlignVertical: 'center'}}>{props.Wins}-{props.Ties}-{props.Losses}</Text>
     </View>
     <View style={{flex: 1, flexDirection: 'row'}}>
-        <HelloWorld />
+        <Expand />
         </View>
   </View>
 
@@ -20,8 +33,7 @@ class TeamStanding extends React.Component {
       TeamName: 'Tony\'s Ladder',
       Wins: 2,
       Ties: 1,
-      Losses: 1,
-      name: 'Mehek'
+      Losses: 1
   }
 
   render() {
@@ -31,8 +43,7 @@ class TeamStanding extends React.Component {
       TeamName={this.state.TeamName}
       Wins={this.state.Wins}
       Ties={this.state.Ties}
-      Losses={this.state.Losses}
-      name={this.state.name} />
+      Losses={this.state.Losses} />
       </View>
     }
   }

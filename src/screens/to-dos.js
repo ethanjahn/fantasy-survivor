@@ -14,7 +14,8 @@ const styles = StyleSheet.create({
   playerCard: {
     width: 160, 
     height: 160, 
-    margin: 16
+    margin: 8,
+    borderRadius: 6
   },
   playerCardNameText: {
     fontWeight: "bold",
@@ -33,8 +34,12 @@ const styles = StyleSheet.create({
     borderRadius: 45,
     borderWidth: 3,
   },
-  playerCardButtonGroup: {
-
+  playerCardButton: {
+    height: 40,
+    width: 40,
+    borderRadius: 6,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
 })
 
@@ -197,7 +202,7 @@ class PlayerCardButton extends React.Component {
   render() {
     return (
     <TouchableWithoutFeedback onPress={this._onPress} >
-      <View style={{backgroundColor: this._getBackgroundColor(), height: 40, width: 40, borderRadius: 6, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={[styles.playerCardButton, {backgroundColor: this._getBackgroundColor()}]}>
         <PlayerCardButtonIcon buttonType={this.props.buttonType} color={this._getIconColor()}/>
       </View>
     </TouchableWithoutFeedback>

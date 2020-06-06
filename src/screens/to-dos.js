@@ -1,7 +1,42 @@
 import React, { useState } from "react";
-import { Text, Image, View, SafeAreaView, ScrollView, TouchableWithoutFeedback } from "react-native";
+import { StyleSheet, Text, Image, View, SafeAreaView, ScrollView, TouchableWithoutFeedback } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+
+const styles = StyleSheet.create({
+  headerText: {
+    fontWeight: "bold",
+    fontSize: 30,
+    margin: 5,
+    color: "#51355A",
+    textAlign: "center"
+  },
+  playerCard: {
+    width: 160, 
+    height: 160, 
+    margin: 16
+  },
+  playerCardNameText: {
+    fontWeight: "bold",
+    fontSize: 20,
+    marginLeft: 4
+  },
+  playerCardTribeText: {
+    fontSize: 14,
+    marginLeft: 4
+  },
+  playerCardAvatar: {
+    marginTop: -20,
+    width: 90,
+    height: 90,
+    alignSelf: "center",
+    borderRadius: 45,
+    borderWidth: 3,
+  },
+  playerCardButtonGroup: {
+
+  },
+})
 
 
 // Create 4 container components: currentWeek, playoffString, selectedPlayers, boostedPlayers
@@ -132,27 +167,38 @@ class PlayerCardButton extends React.Component {
     isPressed: false
   }
 
+  constructor(props) {
+    super(props);
+    this._onPress = this._onPress.bind(this);
+  }
+
   _onPress() {
     this.setState(
-      {isPressed: true}
+      {isPressed: !this.state.isPressed}
     )
   }
 
-  _getColor() {
+  _getBackgroundColor() {
     if (this.state.isPressed) {
-      return "red"
+      return this.props.darkColor
     } else {
-      return "green"
+      return "transparent"
+    }
+  }
+
+  _getIconColor() {
+    if (this.state.isPressed) {
+      return "white"
+    } else {
+      return this.props.darkColor
     }
   }
 
   render() {
-    console.log(this._getColor())
-    console.log(this.state.isPressed)
     return (
-    <TouchableWithoutFeedback onPress={this._onPress} style={{backgroundColor: "blue"}}>
-      <View>
-        <PlayerCardButtonIcon buttonType={this.props.buttonType} color={this._getColor()}/>
+    <TouchableWithoutFeedback onPress={this._onPress} >
+      <View style={{backgroundColor: this._getBackgroundColor(), height: 40, width: 40, borderRadius: 6, justifyContent: 'center', alignItems: 'center'}}>
+        <PlayerCardButtonIcon buttonType={this.props.buttonType} color={this._getIconColor()}/>
       </View>
     </TouchableWithoutFeedback>
     );
@@ -162,11 +208,11 @@ class PlayerCardButton extends React.Component {
 class PlayerCardButtonGroup extends React.Component {
   render() {
     return (
-      <View style={{flexDirection: 'row', justifyContent: "space-evenly"}}>
-        <PlayerCardButton buttonType='survival' />
-        <PlayerCardButton buttonType='exploration' />
-        <PlayerCardButton buttonType='challenge' />
-        <PlayerCardButton buttonType='social' />
+      <View style={{flexDirection: 'row', flex: 1, alignItems: 'flex-end'}}>
+        <PlayerCardButton buttonType='survival' darkColor={ this.props.darkColor } style={{}} />
+        <PlayerCardButton buttonType='exploration' darkColor={ this.props.darkColor } />
+        <PlayerCardButton buttonType='challenge' darkColor={ this.props.darkColor } />
+        <PlayerCardButton buttonType='social' darkColor={ this.props.darkColor } />
       </View>
     )
   }
@@ -182,7 +228,7 @@ class PlayerCards extends React.Component {
         boostedType: "survival",
         isSelected: false,
         color: "lightblue",
-        borderColor: "darkblue",
+        darkColor: "darkblue",
         imageUrl: "https://wwwimage-secure.cbsstatic.com/thumbnails/photos/w425-q80/cast/520510d9980da36f_surv34_cast_tonyvlachos.jpg"
       },
       {
@@ -192,7 +238,7 @@ class PlayerCards extends React.Component {
         boostedType: "survival",
         isSelected: false,
         color: "pink",
-        borderColor: "darkred",
+        darkColor: "darkred",
         imageUrl: "https://i0.wp.com/myiclicktv.com/wp-content/uploads/2020/02/EOVw7HrWAAAfWs1-409x600sss.jpg?fit=591%2C400&ssl=1"
       },
       {
@@ -202,7 +248,7 @@ class PlayerCards extends React.Component {
         boostedType: "survival",
         isSelected: false,
         color: "lightblue",
-        borderColor: "darkblue",
+        darkColor: "darkblue",
         imageUrl: "https://vignette.wikia.nocookie.net/survivor/images/d/dc/S40_Yul_Kwon.jpg/revision/latest/scale-to-width-down/670?cb=20200115164424"
       }
     ]
@@ -240,18 +286,18 @@ class PlayerCards extends React.Component {
 }
 
 const PlayerCard = props =>
-  <View style={{backgroundColor: props.color, width: 160, height: 160, margin: 16}}>
-    <Text style={{fontWeight: "bold", fontSize: 20}}>{ props.name }</Text>
-    <Text style={{fontSize: 14}}>{ props.tribeName }</Text>
-    <Image style={{marginTop: -20, marginBottom: 5, width: 90, height: 90, alignSelf: "center", borderRadius: 45, borderWidth: 3, borderColor: props.borderColor}} source={{uri: props.imageUrl}} />
-    <PlayerCardButtonGroup />
+  <View style={[styles.playerCard, {backgroundColor: props.color}]}>
+    <Text style={[styles.playerCardNameText, {color: props.darkColor}]}>{ props.name }</Text>
+    <Text style={[styles.playerCardTribeText, {color: props.darkColor}]}>{ props.tribeName }</Text>
+    <Image style={[styles.playerCardAvatar, {borderColor: props.darkColor}]} source={{uri: props.imageUrl}} />
+    <PlayerCardButtonGroup darkColor={ props.darkColor }/>
   </View>
 
 export default function ToDoScreen() {
   return (
     <SafeAreaView>
       <ScrollView>
-        <Text style={{fontWeight: "bold", fontSize: 30, margin: 5, color: "#51355A", textAlign: "center"}}>Survivors, are you ready?</Text>
+        <Text style={styles.headerText}>Survivors, are you ready?</Text>
         <ToDoTextContainer />
         <PlayerCards />
       </ScrollView>

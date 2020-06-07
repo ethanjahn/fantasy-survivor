@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { StyleSheet, Text, Image, View, SafeAreaView, ScrollView, TouchableWithoutFeedback } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { intToWords } from "_utils/intToWords.js"
 
 const styles = StyleSheet.create({
   headerText: {
@@ -26,6 +27,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginLeft: 4
   },
+  tribe1Text: {
+    color: "darkblue"
+  },
+  tribe2Text: {
+    color: "darkred"
+  },
+  tribe1Card: {
+    backgroundColor: "lightblue"
+  },
+  tribe2Card:{
+    backgroundColor: "pink"
+  },
   playerCardAvatar: {
     marginTop: -20,
     width: 90,
@@ -34,14 +47,73 @@ const styles = StyleSheet.create({
     borderRadius: 45,
     borderWidth: 3,
   },
+  tribe1Avatar: {
+    borderColor: "darkblue"
+  },
+  tribe2Avatar: {
+    borderColor: "darkred"
+  },
+  tribe1PressedButton: {
+    backgroundColor: "darkblue"
+  },
+  tribe2PressedButton: {
+    backgroundColor: "darkred"
+  },
+  notPressedButton: {
+    backgroundColor: "transparent"
+  },
+  tribe1NotPressedButtonIcon: {
+    color: "darkblue"
+  },
+  tribe2NotPressedButtonIcon: {
+    color: "darkred"
+  },
+  pressedButtonIcon: {
+    color: "white"
+  },
   playerCardButton: {
     height: 40,
     width: 40,
     borderRadius: 6,
     justifyContent: 'center',
     alignItems: 'center'
-  },
+  }
 })
+
+const styleMap = {
+  text: {
+    tribe1: styles.tribe1Text,
+    tribe2: styles.tribe2Text
+  },
+  avatar: {
+    tribe1: styles.tribe1Avatar,
+    tribe2: styles.tribe2Avatar
+  },
+  card: {
+    tribe1: styles.tribe1Card,
+    tribe2: styles.tribe2Card
+  },
+  button: {
+    true: {
+      tribe1: styles.tribe1PressedButton,
+      tribe2: styles.tribe2PressedButton
+    },
+    false: {
+      tribe1: styles.notPressedButton,
+      tribe2: styles.notPressedButton
+    }
+  },
+  buttonIcon: {
+    true: {
+      tribe1: styles.pressedButtonIcon,
+      tribe2: styles.pressedButtonIcon
+    },
+    false: {
+      tribe1: styles.tribe1NotPressedButtonIcon,
+      tribe2: styles.tribe2NotPressedButtonIcon
+    }
+  }
+}
 
 
 // Create 4 container components: currentWeek, playoffString, selectedPlayers, boostedPlayers
@@ -95,63 +167,6 @@ function BoostedPlayers(props) {
   </Text>;
   }
 
-class ToDoTextContainer extends React.Component {
-  state = { 
-    winsNeeded: 3,
-    weeksLeft: 5,
-    weekNumber: 5,
-    weekOpponent: "Tony's Ladder",
-    numPlayersToSelect: 1,
-    isPlural: false,
-    boostedPlayers: [
-      {name: "Natalie", boostType: "Survival"},
-      {name: "Tony", boostType: "Social"}
-    ]
-  }
-
-  toWords(int, capitalize) {
-    let map = {
-      1: "one",
-      2: "two",
-      3: "three",
-      4: "four",
-      5: "five",
-      6: "six",
-      7: "seven",
-      8: "eight",
-      9: "nine",
-      10: "ten"
-    }
-
-    if (capitalize) {
-      let str = map[int]
-      return str.charAt(0).toUpperCase() + str.slice(1)
-    }
-
-    return map[int]
-  }
-
-  render() {
-    return <>
-      <CurrentWeek
-        weekNumber={this.toWords(this.state.weekNumber)}
-        weekOpponent={this.state.weekOpponent}
-      />
-      <PlayoffString 
-        winsNeeded={this.toWords(this.state.winsNeeded)}
-        weeksLeft={this.toWords(this.state.weeksLeft)} 
-      />
-      <SelectedPlayers
-        numPlayersToSelect={this.toWords(this.state.numPlayersToSelect)}
-        isPlural={this.state.isPlural}
-      />
-      <BoostedPlayers
-        boostedPlayers={this.state.boostedPlayers}
-      />
-    </>;
-  }
-}
-
 class PlayerCardButtonIcon extends React.Component {
   render() {
     switch(this.props.buttonType) {
@@ -183,27 +198,14 @@ class PlayerCardButton extends React.Component {
     )
   }
 
-  _getBackgroundColor() {
-    if (this.state.isPressed) {
-      return this.props.darkColor
-    } else {
-      return "transparent"
-    }
-  }
-
-  _getIconColor() {
-    if (this.state.isPressed) {
-      return "white"
-    } else {
-      return this.props.darkColor
-    }
-  }
-
   render() {
     return (
     <TouchableWithoutFeedback onPress={this._onPress} >
-      <View style={[styles.playerCardButton, {backgroundColor: this._getBackgroundColor()}]}>
-        <PlayerCardButtonIcon buttonType={this.props.buttonType} color={this._getIconColor()}/>
+      <View style={[styles.playerCardButton, styleMap['button'][this.state.isPressed][this.props.tribeId]]}>
+        <PlayerCardButtonIcon
+          buttonType={this.props.buttonType}
+          color={styleMap['buttonIcon'][this.state.isPressed][this.props.tribeId]['color']}
+          style={styleMap['button'][this.state.isPressed][this.props.tribeId]}/>
       </View>
     </TouchableWithoutFeedback>
     );
@@ -214,60 +216,26 @@ class PlayerCardButtonGroup extends React.Component {
   render() {
     return (
       <View style={{flexDirection: 'row', flex: 1, alignItems: 'flex-end'}}>
-        <PlayerCardButton buttonType='survival' darkColor={ this.props.darkColor } style={{}} />
-        <PlayerCardButton buttonType='exploration' darkColor={ this.props.darkColor } />
-        <PlayerCardButton buttonType='challenge' darkColor={ this.props.darkColor } />
-        <PlayerCardButton buttonType='social' darkColor={ this.props.darkColor } />
+        <PlayerCardButton buttonType='survival' tribeId={ this.props.tribeId } />
+        <PlayerCardButton buttonType='exploration' tribeId={ this.props.tribeId }  />
+        <PlayerCardButton buttonType='challenge' tribeId={ this.props.tribeId }  />
+        <PlayerCardButton buttonType='social' tribeId={ this.props.tribeId }  />
       </View>
     )
   }
 }
 
 class PlayerCards extends React.Component { 
-  state = {
-    players: [
-      {
-        key: "1",
-        name: "Tony",
-        tribeName: "Dakal",
-        boostedType: "survival",
-        isSelected: false,
-        color: "lightblue",
-        darkColor: "darkblue",
-        imageUrl: "https://wwwimage-secure.cbsstatic.com/thumbnails/photos/w425-q80/cast/520510d9980da36f_surv34_cast_tonyvlachos.jpg"
-      },
-      {
-        key: "2",
-        name: "Natalie",
-        tribeName: "Sele",
-        boostedType: "survival",
-        isSelected: false,
-        color: "pink",
-        darkColor: "darkred",
-        imageUrl: "https://i0.wp.com/myiclicktv.com/wp-content/uploads/2020/02/EOVw7HrWAAAfWs1-409x600sss.jpg?fit=591%2C400&ssl=1"
-      },
-      {
-        key: "3",
-        name: "Yul",
-        tribeName: "Dakal",
-        boostedType: "survival",
-        isSelected: false,
-        color: "lightblue",
-        darkColor: "darkblue",
-        imageUrl: "https://vignette.wikia.nocookie.net/survivor/images/d/dc/S40_Yul_Kwon.jpg/revision/latest/scale-to-width-down/670?cb=20200115164424"
-      }
-    ]
-  };
 
   getColumns() {
     var leftColumnArray = [];
     var rightColumnArray = [];
 
-    for (var i = 0; i < this.state.players.length; i++) {
+    for (var i = 0; i < this.props.players.length; i++) {
       if (i % 2 == 0)
-        leftColumnArray.push(this.state.players[i]);
+        leftColumnArray.push(this.props.players[i]);
       else
-        rightColumnArray.push(this.state.players[i]);
+        rightColumnArray.push(this.props.players[i]);
     }
 
     return [leftColumnArray, rightColumnArray]
@@ -290,22 +258,85 @@ class PlayerCards extends React.Component {
   };
 }
 
-const PlayerCard = props =>
-  <View style={[styles.playerCard, {backgroundColor: props.color}]}>
-    <Text style={[styles.playerCardNameText, {color: props.darkColor}]}>{ props.name }</Text>
-    <Text style={[styles.playerCardTribeText, {color: props.darkColor}]}>{ props.tribeName }</Text>
-    <Image style={[styles.playerCardAvatar, {borderColor: props.darkColor}]} source={{uri: props.imageUrl}} />
-    <PlayerCardButtonGroup darkColor={ props.darkColor }/>
-  </View>
+class PlayerCard extends React.Component {
 
-export default function ToDoScreen() {
-  return (
-    <SafeAreaView>
-      <ScrollView>
-        <Text style={styles.headerText}>Survivors, are you ready?</Text>
-        <ToDoTextContainer />
-        <PlayerCards />
-      </ScrollView>
-    </SafeAreaView>
-  );
+  render() {
+    return (
+      <View style={[styles.playerCard, styleMap['card'][this.props.tribeId]]}>
+        <Text style={[styles.playerCardNameText, styleMap['text'][this.props.tribeId]]}>{ this.props.name }</Text>
+        <Text style={[styles.playerCardTribeText, styleMap['text'][this.props.tribeId]]}>{ this.props.tribeName }</Text>
+        <Image style={[styles.playerCardAvatar, styleMap['avatar'][this.props.tribeId]]} source={{uri: this.props.imageUrl}} />
+        <PlayerCardButtonGroup tribeId={ this.props.tribeId }/>
+      </View>
+    )}
+}
+
+export default class ToDoScreen extends React.Component {
+  state = { 
+    winsNeeded: 3,
+    weeksLeft: 5,
+    weekNumber: 5,
+    weekOpponent: "Tony's Ladder",
+    numPlayersToSelect: 1,
+    isPlural: false,
+    boostedPlayers: [
+      {name: "Natalie", boostType: "Survival"},
+      {name: "Tony", boostType: "Social"}
+    ],
+    players: [
+      {
+        key: "1",
+        name: "Tony",
+        tribeName: "Dakal",
+        tribeId: "tribe1",
+        boostedType: "survival",
+        isSelected: false,
+        imageUrl: "https://wwwimage-secure.cbsstatic.com/thumbnails/photos/w425-q80/cast/520510d9980da36f_surv34_cast_tonyvlachos.jpg"
+      },
+      {
+        key: "2",
+        name: "Natalie",
+        tribeName: "Sele",
+        tribeId: "tribe2",
+        boostedType: "survival",
+        isSelected: false,
+        imageUrl: "https://i0.wp.com/myiclicktv.com/wp-content/uploads/2020/02/EOVw7HrWAAAfWs1-409x600sss.jpg?fit=591%2C400&ssl=1"
+      },
+      {
+        key: "3",
+        name: "Yul",
+        tribeName: "Dakal",
+        tribeId: "tribe1",
+        boostedType: "survival",
+        isSelected: false,
+        imageUrl: "https://vignette.wikia.nocookie.net/survivor/images/d/dc/S40_Yul_Kwon.jpg/revision/latest/scale-to-width-down/670?cb=20200115164424"
+      }
+    ]
+  }
+
+  render() {
+    return (
+      <SafeAreaView>
+        <ScrollView>
+          <Text style={styles.headerText}>Survivors, are you ready?</Text>
+          <CurrentWeek
+            weekNumber={intToWords(this.state.weekNumber)}
+            weekOpponent={this.props.weekOpponent}
+          />
+          <PlayoffString 
+            winsNeeded={intToWords(this.state.winsNeeded)}
+            weeksLeft={intToWords(this.state.weeksLeft)} 
+          />
+          <SelectedPlayers
+            numPlayersToSelect={intToWords(this.state.numPlayersToSelect)}
+            isPlural={this.props.isPlural}
+          />
+          <BoostedPlayers
+            boostedPlayers={this.state.boostedPlayers}
+          />
+          <PlayerCards players={this.state.players}/>
+        </ScrollView>
+      </SafeAreaView>
+    );
+  }
 }
